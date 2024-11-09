@@ -14,6 +14,9 @@ public class Cliente {
             return;
         }
 
+        System.out.print("Digite o nome de usuario: ");
+        String nomeUsuario = Teclado.getUmString();
+
         Socket conexao = null;
 
         try{
@@ -51,11 +54,13 @@ public class Cliente {
         Parceiro servidor = null;
 
         try{
-            servidor = new Parceiro(conexao, receptor, transmissor);
+            servidor = new Parceiro(conexao, receptor, transmissor, nomeUsuario);
         }catch (Exception erro){
             System.err.println("Indique o servidor e a porta corretos");
             return;
         }
+        servidor.receba(new Mensagem("LOGIN:" + nomeUsuario));
+
 
         TratadoraDeComunicacao tratadoraDeComunicacao = null;
 

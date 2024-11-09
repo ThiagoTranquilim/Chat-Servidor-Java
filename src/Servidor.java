@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Servidor {
 
@@ -16,8 +18,7 @@ public class Servidor {
         if(args.length == 1)
             porta = args[0];
 
-        ArrayList<Parceiro> usuarios =
-                new ArrayList<Parceiro>();
+        Map<String, Parceiro> usuarios = new HashMap<>();
 
         AceitadoraDeConexao aceitadoraDeConexao = null;
 
@@ -46,7 +47,7 @@ public class Servidor {
                 synchronized (usuarios){
                     ComunicadoDeDesligamento comunicadoDeDesligamento = new ComunicadoDeDesligamento();
 
-                    for(Parceiro usuario:usuarios){
+                    for(Parceiro usuario:usuarios.values()){
 
                         try{
                             usuario.receba(comunicadoDeDesligamento);
@@ -59,8 +60,18 @@ public class Servidor {
 
                 System.out.println ("O servidor foi desativado!\n");
                 System.exit(0);
-            }
-            else{
+
+            }else if(comando.toLowerCase().equals("listar")){
+                synchronized (usuarios) {
+                    System.out.println("Clientes conectados:");
+                    for (Map.Entry<String, Parceiro> entry : usuarios.entrySet()) {
+                        String nome = entry.getKey();
+                        Parceiro parceiro = entry.getValue();
+                        String enderecoIP = parceiro.getConexao().getInetAddress().getHostAddress();
+                        System.out.println("Usuário: " + nome + " | IP: " + enderecoIP);
+                    }
+                }
+            }else{
                 System.err.println ("Comando invalido!\n");
             }
         }

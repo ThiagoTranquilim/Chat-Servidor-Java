@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 public class Parceiro {
 
     private Socket            conexao;
+    private String            nome;
     private ObjectInputStream receptor;
     private ObjectOutputStream transmissor;
 
@@ -18,7 +19,8 @@ public class Parceiro {
 
     public Parceiro(Socket conexao,
                     ObjectInputStream receptor,
-                    ObjectOutputStream transmissor)
+                    ObjectOutputStream transmissor,
+                    String nome)
                     throws Exception{
         if(conexao == null)
             throw new Exception("Conexão ausente");
@@ -29,9 +31,13 @@ public class Parceiro {
         if(transmissor == null)
             throw new Exception("Transmissor ausente");
 
+        if (nome == null || nome.trim().isEmpty())
+            throw new Exception("Nome ausente");
+
         this.conexao = conexao;
         this.receptor = receptor;
         this.transmissor = transmissor;
+        this.nome = nome;
     }
 
     public void receba (Comunicado x) throws Exception{
@@ -74,8 +80,29 @@ public class Parceiro {
         try{
             this.transmissor.close();
             this.receptor.close();
+            this.conexao.close();
         }catch (Exception erro){
             throw new Exception("Erro de desconexao");
         }
+    }
+
+    public ObjectOutputStream getTransmissor() {
+        return this.transmissor;
+    }
+
+    public ObjectInputStream getReceptor() {
+        return this.receptor;
+    }
+
+    public String getNome() {
+        return this.nome;
+    }
+
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
+    public Socket getConexao() {
+        return this.conexao;
     }
 }
